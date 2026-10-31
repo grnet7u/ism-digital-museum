@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run project",
+      "type": "npm",
+      "script": "dev",
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Verify project",
+      "type": "npm",
+      "script": "check",
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}

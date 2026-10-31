@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "anthropic.claude-code",
+    "openai.chatgpt",
+    "esbenp.prettier-vscode",
+    "supabase.vscode-supabase-extension"
+  ]
+}

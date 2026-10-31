@@ -1,0 +1,5 @@
+# Copy this into Claude Code in this project's VS Code window
+
+Read CLAUDE.md, AGENTS.md and all documents named there. Inspect git status and the existing scaffold; do not regenerate it. Explain in Mongolian your understanding of the required museum, Technology Evolution, real Supabase requirement, user roles and remaining content gaps. Then implement the first incomplete phase in docs/STATUS.md using docs/PLAN.md.
+
+Work only in this museum repository. Keep React + JavaScript, Vite and Supabase; preserve the UFE design direction. Do not switch stacks, build the mobile project, invent faculty content or silently fake database behavior. Make small coherent changes, run npm run check and relevant manual/security checks, update STATUS with actual results, and summarize what the student must understand. If cloud credentials are absent, finish independent UI/tests and identify the exact missing setup without requesting secrets in chat. Do not mark auth/RLS/deployment complete without real verification.
