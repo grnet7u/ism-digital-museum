@@ -57,3 +57,15 @@ Maximum 5 MB, JPEG/PNG/WebP. Preview selected images locally before upload. Fail
 ## Dates and errors
 
 Display Mongolian labels. Event date is calendar date, not timezone-shifted midnight. Store timestamps UTC, display locally. A missing record is distinct from a permission error; do not reveal private record existence. Failed queries show retryable UI, never a fake successful empty museum.
+
+## Implemented in M1 (`supabase/migrations/20261101120000_museum_schema.sql`)
+
+- Admin = `auth.jwt() -> app_metadata ->> role = 'admin'` via `public.is_admin()`. Set it in Dashboard → Authentication → user → app_metadata (or SQL as postgres: `update auth.users set raw_app_meta_data = raw_app_meta_data || '{"role":"admin"}' where email = '...'`), then log in again.
+- Profile row created by `on_auth_user_created` trigger (SECURITY DEFINER, empty search_path, `on conflict do nothing`). Users may update only display_name/bio/avatar_path (column grant) on their own row; avatar_path must sit in `avatars/<own id>/`.
+- `exhibits_guard` BEFORE trigger (not SECURITY DEFINER) enforces what RLS cannot: creator_id immutable; non-admin API users cannot insert/set `published`, cannot write moderation_note, image_path must be under `exhibits/<own id>/`; editing a published work forces `pending`. SQL Editor / service role (not `anon`/`authenticated`) is trusted, so seeds can insert published rows.
+- Creator deletion: `exhibits.creator_id … on delete restrict` — a user who still owns works cannot be deleted; delete their works first.
+- Storage: private `museum-media` bucket, 5 MB, JPEG/PNG/WebP. Read = admin, own folder, or file referenced by a row the caller can read (row RLS applies inside the subquery). Insert/delete = own `exhibits|avatars/<uid>/` folder, admin for `teachers|events|history/`. No UPDATE policy, so overwrite is denied.
+
+### Migration and rollback
+
+Applied by: _pending — record date, project ref and method (SQL Editor / `supabase db push`) here._ Rollback of this first migration on an empty project: drop the storage policies, the bucket (after emptying it), the triggers/functions and the seven tables. Once real data exists, use a forward-fix migration instead.

@@ -9,7 +9,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "vitest run",
-    "check": "npm run lint && npm run test && npm run build"
+    "check": "npm run lint && npm run test && npm run build",
+    "rls-check": "node --env-file=.env.local scripts/rls-check.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.118.0",

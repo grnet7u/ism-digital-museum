@@ -1,24 +1,24 @@
 # Status — 2026-11-01
 
-Owner: Claude Code. Codex prepared the environment; Codex will now own the separate StudyMate project.
+Owner: Claude Code. Codex owns the separate StudyMate project.
 
-## Completed (M0 scaffold)
-- Independent Vite React/JavaScript folder, npm install and lockfile, Node 24 engine.
-- Supabase SDK and React Router installed; missing-config guard, simple UFE-styled route shell.
-- Technology aggregation utility with focused tests; not a complete Evolution UI.
-- Local VS Code tasks/recommendations; existing global settings untouched.
-- Vercel SPA config and detailed deployment instructions.
-- PLAN, architecture/security, design/wireframe, content, tests and Claude starting prompt.
-- Assignment PDF/design image/previous teacher research copied as ignored local reference.
-- Separate local Git repository; no remote/cloud resources created.
+## Completed
+- M0 scaffold (Vite/React/Router, Supabase client guard, evolution aggregation, Vercel config, docs).
+- M1 code (cloud acceptance pending):
+  - `supabase/migrations/20261101120000_museum_schema.sql`: 7 tables, FKs, checks, indexes, grants, RLS on every table, signup profile trigger, `exhibits_guard` moderation trigger, private `museum-media` bucket + storage policies, 5 generic categories. Design notes in ARCHITECTURE "Implemented in M1".
+  - Auth UI: `AuthProvider` (session restore + listener), `/login`, `/register` (confirmation-required message), `/auth/callback`, logout, `RequireAuth` (UX only) for `/my-works` and admin-only `/admin`.
+  - `scripts/rls-check.mjs` (`npm run rls-check`): 30+ real-request checks for visitor/A/B/admin incl. storage, self-promotion, publish bypass.
 
 ## Verified
-2026-11-01: npm run check PASS (oxlint, 2 Vitest cases, Vite production build).
-Initial online npm audit: 0 reported vulnerabilities. No real Supabase or browser end-to-end tests run.
-Node v24.21.0; npm 11.19.1; Git 2.55.0.windows.5.
+- 2026-11-01: `npm run check` PASS — oxlint clean, Vitest 2 files / 5 tests, Vite build OK.
+- `node --check scripts/rls-check.mjs` OK. `npm run rls-check` NOT run: no `.env.local` / Supabase project yet.
+- Migration NOT applied anywhere; SQL not executed against Postgres yet.
 
-## Remaining / not claimed
-M1–M5 are NOT complete. Auth, RLS, storage, CRUD, real pages/admin/evolution UI, approved content and deployment remain. Reference photo/permission/content gaps documented in CONTENT. No live URL, GitHub remote or Supabase project configured.
+## Remaining / blockers
+- **Blocker:** dedicated Supabase project not identified. Needed from student: create/choose project, put URL + publishable key in `.env.local`, apply migration, enable email confirmation, set Site URL / redirect `http://127.0.0.1:5173/auth/callback`, create test users A/B/admin.
+- M1 exit (RLS matrix pass, signup/confirm/reload in browser) not yet proven.
+- M2–M5 not started. No GitHub remote, no Vercel URL.
 
 ## Next action
-Claude: read CLAUDE.md and start M1. Identify the correct Supabase project without guessing or requesting secrets in chat. If account setup is unavailable, build independent page/form components and tests, but leave database acceptance explicitly pending. Keep the mobile repo untouched.
+1. Student sets up Supabase (above); Claude applies/verifies migration, runs `npm run rls-check`, records results here.
+2. Meanwhile continue M2 (exhibit CRUD + upload UI) — independent of the cloud project.

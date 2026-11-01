@@ -38,3 +38,7 @@ Evolution: duplicate/case/whitespace tags counted once per exhibit; unpublished 
 6. ERD, RLS and build/repository explanation (0.5–1 min).
 
 Record executed evidence in STATUS. A checklist item is not automatically a passed test.
+
+## Running the RLS matrix
+
+Create three test users in the museum project (A, B, admin; give only admin `app_metadata.role = admin`), put their emails/passwords and the URL/publishable key in `.env.local` (ignored by Git; no VITE_ prefix for passwords), then `npm run rls-check`. It signs in with the publishable key only and prints PASS/FAIL per scenario, cleaning up its own rows/files. Paste the summary into STATUS.
