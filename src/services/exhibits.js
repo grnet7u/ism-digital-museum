@@ -9,8 +9,11 @@ const check = ({ data, error }) => { if (error) throw error; return data }
 export const listCategories = async () =>
   check(await supabase.from('exhibition_categories').select('id, name').order('name'))
 
-export const listPublishedExhibits = async () =>
-  check(await supabase.from('exhibits').select(FIELDS).eq('status', 'published').order('year_created', { ascending: false }))
+export async function listPublishedExhibits({ creatorId } = {}) {
+  let query = supabase.from('exhibits').select(FIELDS).eq('status', 'published').order('year_created', { ascending: false })
+  if (creatorId) query = query.eq('creator_id', creatorId)
+  return check(await query)
+}
 
 export const listMyExhibits = async (userId) =>
   check(await supabase.from('exhibits').select(FIELDS).eq('creator_id', userId).order('updated_at', { ascending: false }))

@@ -6,6 +6,7 @@ import { deleteExhibit, listMyExhibits, setExhibitStatus } from '../services/exh
 import { signedUrls } from '../services/storage'
 import ExhibitCard from '../components/ExhibitCard'
 import LoadState from '../components/LoadState'
+import ProfileForm from '../components/ProfileForm'
 
 export default function MyWorksPage() {
   const { user } = useAuth()
@@ -30,6 +31,7 @@ export default function MyWorksPage() {
 
   return <section className="section">
     <div className="page-head"><h1>Миний бүтээл</h1><Link className="button" to="/my-works/new">+ Шинэ бүтээл</Link></div>
+    <ProfileForm userId={user.id} />
     {message && <p className={message.ok ? 'notice' : 'error'} role="status">{message.text}</p>}
     <LoadState loading={loading} error={error} reload={reload} empty={!data?.exhibits.length} emptyText="Та одоогоор бүтээл нэмээгүй байна.">
       <div className="grid">{data?.exhibits.map((e) => <ExhibitCard key={e.id} exhibit={e} imageUrl={data.urls[e.image_path]} showStatus>

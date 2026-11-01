@@ -9,6 +9,11 @@ import ExhibitsPage from './pages/ExhibitsPage'
 import ExhibitDetailPage from './pages/ExhibitDetailPage'
 import MyWorksPage from './pages/MyWorksPage'
 import ExhibitFormPage from './pages/ExhibitFormPage'
+import { TeacherDetailPage, TeachersPage } from './pages/TeacherPages'
+import { EventDetailPage, EventsPage } from './pages/EventPages'
+import { CreatorDetailPage, CreatorsPage } from './pages/CreatorPages'
+import HistoryPage from './pages/HistoryPage'
+import AdminPage from './pages/AdminPage'
 import './App.css'
 
 const pages = [
@@ -29,6 +34,9 @@ function Home() {
 function PendingPage({ title }) {
   return <section className="section"><p className="eyebrow">ХӨГЖҮҮЛЭЛТИЙН СУУРЬ</p><h1>{title}</h1><p>Энэ хэсгийн өгөгдөл болон үйлдлүүдийг дараагийн үе шатанд холбоно.</p><Link to="/">Нүүр рүү буцах</Link></section>
 }
+function NotFound() {
+  return <section className="section"><h1>Хуудас олдсонгүй</h1><p>Таны хайсан хаяг байхгүй байна.</p><Link to="/">Нүүр рүү буцах</Link></section>
+}
 function AccountLinks() {
   const { user, isAdmin, signOut } = useAuth()
   if (!user) return <Link className="login" to="/login">Нэвтрэх</Link>
@@ -41,7 +49,15 @@ function AccountLinks() {
 export default function App() {
   return <AuthProvider><BrowserRouter><header><Link className="brand" to="/">ISM <span>Digital Museum</span></Link><nav aria-label="Үндсэн цэс">{pages.map(([path,title]) => <NavLink key={path} to={path}>{title}</NavLink>)}</nav><AccountLinks /></header>
     <main>{!isSupabaseConfigured && <aside className="setup-note" role="status">Supabase хараахан тохируулаагүй. Өгөгдөл болон нэвтрэлт ажиллахгүй.</aside>}
-    <Routes><Route path="/" element={<Home />} />{pages.slice(1).map(([path,title]) => <Route key={path} path={path} element={<PendingPage title={title} />} />)}
+    <Routes><Route path="/" element={<Home />} />
+      <Route path="/teachers" element={<TeachersPage />} />
+      <Route path="/teachers/:id" element={<TeacherDetailPage />} />
+      <Route path="/events" element={<EventsPage />} />
+      <Route path="/events/:id" element={<EventDetailPage />} />
+      <Route path="/history" element={<HistoryPage />} />
+      <Route path="/creators" element={<CreatorsPage />} />
+      <Route path="/creators/:id" element={<CreatorDetailPage />} />
+      <Route path="/evolution" element={<PendingPage title="Технологийн хувьсал" />} />
       <Route path="/exhibits" element={<ExhibitsPage />} />
       <Route path="/exhibits/:id" element={<ExhibitDetailPage />} />
       <Route path="/my-works/new" element={<RequireAuth><ExhibitFormPage /></RequireAuth>} />
@@ -50,8 +66,8 @@ export default function App() {
       <Route path="/register" element={<AuthPage mode="register" />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
       <Route path="/my-works" element={<RequireAuth><MyWorksPage /></RequireAuth>} />
-      <Route path="/admin" element={<RequireAuth admin><PendingPage title="Админ" /></RequireAuth>} />
-      <Route path="*" element={<PendingPage title="Хуудас олдсонгүй" />} /></Routes></main>
+      <Route path="/admin" element={<RequireAuth admin><AdminPage /></RequireAuth>} />
+      <Route path="*" element={<NotFound />} /></Routes></main>
     <footer>ISM Digital Museum · Оюутны төслийн хөгжүүлэлтийн хувилбар</footer>
   </BrowserRouter></AuthProvider>
 }

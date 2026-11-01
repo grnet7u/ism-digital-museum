@@ -12,16 +12,21 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
   - Auth UI: AuthProvider (session restore), `/login`, `/register`, `/auth/callback`, logout, RequireAuth (UX only).
 
 - M2 exhibit slice: services (`src/services/exhibits.js`, `storage.js`), `/exhibits` list, `/exhibits/:id` detail (direct URL, not-found/permission shown alike), `/my-works` (status badges, admin note, submit-for-review, inline delete confirmation), `/my-works/new` + `/my-works/:id/edit` (validation, local preview, JPEG/PNG/WebP ≤5 MB). Upload → save row → remove new upload on failure; replacement deletes old file only after the row saves; delete removes row first, then file, and reports cleanup failure. Shared `useLoad` + `LoadState` give loading/error-with-retry/empty states.
+- M3 public content + admin: `/teachers`(+`/:id`), `/events`(+`/:id` album), `/history` timeline, `/creators`(+`/:id` linked to published works), creator profile editor on /my-works, `/admin` tabs (exhibit moderation: publish / return with note / revoke; teachers, events + album, history CRUD with image upload; categories add/delete with FK guard). `npm run seed-demo` adds [Demo] events/history/exhibits through the API. Teachers imported unpublished (see CONTENT inventory).
 
 ## Verified
 - 2026-11-01 `npm run rls-check` against live project: **33/33 PASS** (visitor/A/B/admin with publishable key only; storage cross-user upload/overwrite/delete denied, wrong MIME rejected, unpublished image unsigned for visitor, publish bypass/creator_id/moderation_note/self-promotion denied, edit-published → pending, admin publish and content write allowed). Cleanup verified: 0 exhibits, 0 teachers, 0 storage objects after run.
 - `npm run check` PASS — oxlint clean (0 warnings), Vitest 4 files / 12 tests (incl. upload/save compensation with mocked client), build OK.
 - 2026-11-01 browser (Chrome, localhost:5173) as creator A: login → empty-form validation errors → create draft with PNG (preview shown, duplicate tag 'react' removed) → edit with javascript: URL rejected → valid edit saved as pending → full reload keeps session and status → replace image (DB check: new path, 1 object, old file gone) → cancel delete → confirm delete. DB afterwards: 0 exhibits, 0 storage objects.
-- Login and reload session restore verified in browser (above). NOT yet checked: register → confirmation e-mail → callback, logout. Default Supabase SMTP only delivers to org members and is rate-limited; demo should log in with prepared accounts.
+- 2026-11-01 M3 headless Chrome (visitor, clean profile): /history, /events, /events/:id (3 signed album images), /teachers (unpublished hidden → empty state), /teachers/:id (not found for visitor), /creators, /creators/:id (4 works), /exhibits (9), /exhibits/:id, unknown route and unknown id messages.
+- 2026-11-01 M3 logged-in UI (puppeteer-core + installed Chrome, script kept outside repo): 12/12 PASS — admin queue, 10 unpublished teachers, prefilled teacher form, add + delete category, in-use category delete refused (FK restrict), return-with-note then publish → visitor reads, creator profile save, creator blocked from /admin, logout + protected-route redirect, no page errors.
+- Login and reload session restore verified in browser (above). Logout verified (M3). NOT yet checked: register → confirmation e-mail → callback. Default Supabase SMTP only delivers to org members and is rate-limited; demo should log in with prepared accounts.
 
 ## Remaining
-- Not exercised in browser: admin publish UI (M3 admin), DB-save failure after upload (covered by unit test only), oversize/GIF rejection in UI (unit-tested; bucket limit verified by rls-check MIME case).
-- M3 content/admin; M4 search + Evolution UI; M5 deploy (GitHub remote, Vercel) and docs.
+- Not UI-tested: admin album photo upload/delete and teacher photo upload (same storage path code as exhibits; album uploads verified via seed API).
+- Student decisions: which teachers to publish (permission), real teacher photos, real events/history to replace [Demo].
+- The student's own Chrome window froze on Supabase dashboard and later on localhost while the extension was attached; a clean Chrome instance renders all pages, so treat it as a browser/extension issue.
+- M4 search + Evolution UI; M5 deploy (GitHub remote, Vercel) and docs.
 
 ## Next action
-M3: admin page (exhibit moderation: publish / return to draft with note; teacher/event/history/category management), public teachers/events/history/creators pages, content import from reviewed teacher research.
+M4: URL-synced search/filters on /exhibits and the Technology Evolution page (timeline, per-year counts, two-year comparison, drill-down).
