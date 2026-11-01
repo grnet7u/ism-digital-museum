@@ -22,3 +22,4 @@ docs/reference/*.pdf
 docs/reference/*.png
 docs/reference/teacher-research.md
 .claude/settings.local.json
+supabase/.temp/
