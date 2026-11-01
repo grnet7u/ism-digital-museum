@@ -5,6 +5,10 @@ import { useAuth } from './features/auth/auth-context'
 import RequireAuth from './components/RequireAuth'
 import AuthPage from './pages/AuthPage'
 import AuthCallbackPage from './pages/AuthCallbackPage'
+import ExhibitsPage from './pages/ExhibitsPage'
+import ExhibitDetailPage from './pages/ExhibitDetailPage'
+import MyWorksPage from './pages/MyWorksPage'
+import ExhibitFormPage from './pages/ExhibitFormPage'
 import './App.css'
 
 const pages = [
@@ -37,11 +41,15 @@ function AccountLinks() {
 export default function App() {
   return <AuthProvider><BrowserRouter><header><Link className="brand" to="/">ISM <span>Digital Museum</span></Link><nav aria-label="Үндсэн цэс">{pages.map(([path,title]) => <NavLink key={path} to={path}>{title}</NavLink>)}</nav><AccountLinks /></header>
     <main>{!isSupabaseConfigured && <aside className="setup-note" role="status">Supabase хараахан тохируулаагүй. Өгөгдөл болон нэвтрэлт ажиллахгүй.</aside>}
-    <Routes><Route path="/" element={<Home />} />{pages.map(([path,title]) => <Route key={path} path={path} element={<PendingPage title={title} />} />)}
+    <Routes><Route path="/" element={<Home />} />{pages.slice(1).map(([path,title]) => <Route key={path} path={path} element={<PendingPage title={title} />} />)}
+      <Route path="/exhibits" element={<ExhibitsPage />} />
+      <Route path="/exhibits/:id" element={<ExhibitDetailPage />} />
+      <Route path="/my-works/new" element={<RequireAuth><ExhibitFormPage /></RequireAuth>} />
+      <Route path="/my-works/:id/edit" element={<RequireAuth><ExhibitFormPage /></RequireAuth>} />
       <Route path="/login" element={<AuthPage mode="login" />} />
       <Route path="/register" element={<AuthPage mode="register" />} />
       <Route path="/auth/callback" element={<AuthCallbackPage />} />
-      <Route path="/my-works" element={<RequireAuth><PendingPage title="Миний бүтээл" /></RequireAuth>} />
+      <Route path="/my-works" element={<RequireAuth><MyWorksPage /></RequireAuth>} />
       <Route path="/admin" element={<RequireAuth admin><PendingPage title="Админ" /></RequireAuth>} />
       <Route path="*" element={<PendingPage title="Хуудас олдсонгүй" />} /></Routes></main>
     <footer>ISM Digital Museum · Оюутны төслийн хөгжүүлэлтийн хувилбар</footer>
