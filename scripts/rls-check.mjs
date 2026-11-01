@@ -93,6 +93,9 @@ for (const table of ['events', 'history_entries', 'exhibition_categories']) {
   check(`B cannot write ${table}`, Boolean(r.error))
 }
 await A.c.auth.updateUser({ data: { role: null } })
+r = await admin.c.from('teachers').insert({ name: tag }).select().single()
+check('admin can write teachers', !r.error, r.error?.message)
+if (r.data) await admin.c.from('teachers').delete().eq('id', r.data.id)
 
 r = await A.c.from('profiles').update({ display_name: 'hacked' }).eq('id', B.id).select()
 check('A cannot edit B profile', !r.data?.length)

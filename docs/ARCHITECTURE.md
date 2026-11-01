@@ -68,4 +68,4 @@ Display Mongolian labels. Event date is calendar date, not timezone-shifted midn
 
 ### Migration and rollback
 
-Applied by: _pending — record date, project ref and method (SQL Editor / `supabase db push`) here._ Rollback of this first migration on an empty project: drop the storage policies, the bucket (after emptying it), the triggers/functions and the seven tables. Once real data exists, use a forward-fix migration instead.
+Applied by: 2026-11-01 to project `ism-digital-museum` (ref `csggzcpmjisspzkxrhky`, eu-west-3) with `npx supabase@2 db query --linked --project-ref csggzcpmjisspzkxrhky -f <file>` (Management API, CLI login, no DB password). Auth URLs set with `supabase/config.toml` + `supabase config push` (only declared keys change). Test users created by SQL insert into auth.users/identities (confirmed, passwords only in .env.local). Rollback of this first migration on an empty project: drop the storage policies, the bucket (after emptying it), the triggers/functions and the seven tables. Once real data exists, use a forward-fix migration instead.

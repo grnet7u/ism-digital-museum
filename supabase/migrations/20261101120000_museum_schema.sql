@@ -138,6 +138,9 @@ create trigger exhibits_guard before insert or update on public.exhibits
   for each row execute function public.exhibits_guard();
 
 -- ---------- Grants ----------
+-- Explicit because the project does not auto-expose new objects; policies call these as the user.
+grant usage on schema public to anon, authenticated;
+grant execute on function public.is_admin(), public.is_api_user() to anon, authenticated;
 grant select on public.profiles, public.exhibition_categories, public.exhibits, public.teachers,
   public.events, public.event_photos, public.history_entries to anon, authenticated;
 grant update (display_name, bio, avatar_path) on public.profiles to authenticated;
