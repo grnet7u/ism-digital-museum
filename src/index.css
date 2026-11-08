@@ -25,6 +25,9 @@
   --radius: 18px;
 }
 * { box-sizing: border-box }
+/* Footer stays at the bottom on short pages */
+#root { min-height: 100vh; display: flex; flex-direction: column }
+#root > main { flex: 1 0 auto; width: 100% }
 body {
   margin: 0;
   min-height: 100vh;
