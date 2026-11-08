@@ -34,18 +34,18 @@ export function TeacherDetailPage() {
     const teacher = await getTeacher(id)
     return { teacher, urls: teacher ? await signedUrls([teacher.photo_path]) : {} }
   }, [id])
-  const t = data?.teacher
+  const teacher = data?.teacher
   return <section className="section">
-    <LoadState loading={loading} error={error} reload={reload} empty={!t} emptyText={t('Багш олдсонгүй.', 'Teacher not found.')}>
-      {t && <article className="detail teacher-detail">
-        <Portrait url={data.urls[t.photo_path]} name={t.name} />
+    <LoadState loading={loading} error={error} reload={reload} empty={!teacher} emptyText={t('Багш олдсонгүй.', 'Teacher not found.')}>
+      {teacher && <article className="detail teacher-detail">
+        <Portrait url={data.urls[teacher.photo_path]} name={teacher.name} />
         <div>
-          <Draft show={!t.published} />
-          <h1>{t.name}</h1>
-          {t.position && <p className="meta">{t.position}</p>}
-          {t.bio && <p className="prose">{t.bio}</p>}
-          {t.courses.length > 0 && <><h2>{t('Заадаг хичээлүүд', 'Courses taught')}</h2><ul>{t.courses.map((c) => <li key={c}>{c}</li>)}</ul></>}
-          {t.source_url && <p className="meta">{t('Эх сурвалж', 'Source')}: <a href={t.source_url} target="_blank" rel="noopener noreferrer">{t('СЭЗИС-ийн багшийн профайл', 'UFE staff profile')}</a></p>}
+          <Draft show={!teacher.published} />
+          <h1>{teacher.name}</h1>
+          {teacher.position && <p className="meta">{teacher.position}</p>}
+          {teacher.bio && <p className="prose">{teacher.bio}</p>}
+          {teacher.courses.length > 0 && <><h2>{t('Заадаг хичээлүүд', 'Courses taught')}</h2><ul>{teacher.courses.map((c) => <li key={c}>{c}</li>)}</ul></>}
+          {teacher.source_url && <p className="meta">{t('Эх сурвалж', 'Source')}: <a href={teacher.source_url} target="_blank" rel="noopener noreferrer">{t('СЭЗИС-ийн багшийн профайл', 'UFE staff profile')}</a></p>}
         </div>
       </article>}
     </LoadState>

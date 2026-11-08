@@ -33,6 +33,8 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 - 2026-11-08 secret scan: tracked files contain only `.env.example`; no keys/passwords/teacher seed/research in any commit. `docs/CONTENT.md` lists the 10 teacher names (no other personal data).
 - Login and reload session restore verified in browser (above). Logout verified (M3). NOT yet checked: register → confirmation e-mail → callback. Default Supabase SMTP only delivers to org members and is rate-limited; demo should log in with prepared accounts.
 
+- 2026-11-08 teacher detail crash fixed: the teacher record shadowed the translation helper. Chrome against the local production build and live Supabase loaded the reported profile and showed the missing-profile message in Mongolian and English. Lint, 19 tests and build passed. Production verification follows the Vercel deployment.
+
 ## Remaining
 - Not UI-tested: admin album photo upload/delete and teacher photo upload (same storage path code as exhibits; album uploads verified via seed API).
 - 2026-11-08 all 10 teachers published (student approval); visitor API read returns 10. Still missing: teacher photos (all 10), bio/courses for Б.Гэрэлтцолмон and Н.Хөгжилт.
