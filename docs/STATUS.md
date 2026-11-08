@@ -42,5 +42,12 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 - The student's own Chrome window froze on Supabase dashboard and later on localhost while the extension was attached; a clean Chrome instance renders all pages, so treat it as a browser/extension issue.
 - Student deploys: GitHub remote + push, Vercel import + env vars, Supabase Site URL/redirects (values in DEPLOYMENT.md). Then: production URL in README and config.toml, deployed-URL checks, screenshots for docs.
 
+## Deployment (2026-11-08)
+- GitHub: https://github.com/grnet7u/ism-digital-museum (public; tracked-file + history secret scan clean before push).
+- Vercel: https://ism-digital-museum-five.vercel.app (first build had no VITE_ env vars -> "Supabase not configured"; fixed by adding them and redeploying).
+- Bug: teacher detail page crashed (a local `t` shadowed the translation `t()`), fixed in 101c92b; remaining `t` loop variables renamed so it cannot recur.
+- Smoke test (headless Chrome, MN and EN): 11 routes + every teacher/event/creator/exhibit detail page, 68 visits on production and on localhost, no page errors, no empty pages. The only FAIL was lazy images below the fold; after scrolling all 9 /exhibits images load.
+- Not yet done: login/admin/photo upload on production, Supabase Site URL/redirects check.
+
 ## Next action
-After the student shares the Vercel URL: run the post-deploy checks from DEPLOYMENT.md against it, record results, add URL + screenshots to README.
+Student sets the Supabase Site URL/redirect to the Vercel domain; then check login + admin teacher photo upload on production and add the URL to README/config.toml.

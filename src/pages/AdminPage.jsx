@@ -14,7 +14,7 @@ const tabs = () => [['moderation', t('Бүтээл хянах', 'Moderation')], 
 
 // Field types: text | textarea | number | date | lines (text[] one per line) | checkbox | image
 const configs = () => ({
-  teachers: { table: 'teachers', folder: 'teachers', imageField: 'photo_path', list: listTeachers, label: (t) => t.name, fields: [
+  teachers: { table: 'teachers', folder: 'teachers', imageField: 'photo_path', list: listTeachers, label: (teacher) => teacher.name, fields: [
     ['name', t('Нэр *', 'Name *'), 'text', true], ['position', t('Албан тушаал', 'Position'), 'text'], ['courses', t('Хичээлүүд (мөр бүрд нэг)', 'Courses (one per line)'), 'lines'],
     ['bio', t('Танилцуулга', 'Bio'), 'textarea'], ['source_url', t('Эх сурвалжийн холбоос', 'Source link'), 'text'], ['sort_order', t('Дараалал', 'Order'), 'number'],
     ['photo_path', t('Зураг', 'Photo'), 'image'], ['published', t('Нийтлэх', 'Publish'), 'checkbox']] },

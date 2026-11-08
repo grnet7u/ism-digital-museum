@@ -13,16 +13,16 @@ const Draft = ({ show }) => show ? <span className="badge draft">{t('Нийтл�
 export function TeachersPage() {
   const { data, error, loading, reload } = useLoad(async () => {
     const teachers = await listTeachers()
-    return { teachers, urls: await signedUrls(teachers.map((t) => t.photo_path)) }
+    return { teachers, urls: await signedUrls(teachers.map((x) => x.photo_path)) }
   }, [])
   return <section className="section">
     <h1>{t('Багш нар', 'Teachers')}</h1>
     <LoadState loading={loading} error={error} reload={reload} empty={!data?.teachers.length} emptyText={t('Нийтлэгдсэн багшийн мэдээлэл одоогоор алга.', 'No published teacher profiles yet.')}>
-      <div className="grid">{data?.teachers.map((t) => <article key={t.id} className="card teacher-card">
-        <Portrait url={data.urls[t.photo_path]} name={t.name} />
-        <Draft show={!t.published} />
-        <h3><Link to={`/teachers/${t.id}`}>{t.name}</Link></h3>
-        {t.position && <p className="meta">{t.position}</p>}
+      <div className="grid">{data?.teachers.map((teacher) => <article key={teacher.id} className="card teacher-card">
+        <Portrait url={data.urls[teacher.photo_path]} name={teacher.name} />
+        <Draft show={!teacher.published} />
+        <h3><Link to={`/teachers/${teacher.id}`}>{teacher.name}</Link></h3>
+        {teacher.position && <p className="meta">{teacher.position}</p>}
       </article>)}</div>
     </LoadState>
   </section>
