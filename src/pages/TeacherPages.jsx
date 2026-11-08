@@ -3,11 +3,12 @@ import { useLoad } from '../lib/useLoad'
 import { getTeacher, listTeachers } from '../services/content'
 import { signedUrls } from '../services/storage'
 import LoadState from '../components/LoadState'
+import { t } from '../features/prefs/prefs-context'
 
 const Portrait = ({ url, name }) => url
-  ? <img className="portrait" src={url} alt={`${name} багшийн зураг`} />
-  : <div className="portrait img-placeholder" aria-label="Зураг хараахан ороогүй">Зураг ороогүй</div>
-const Draft = ({ show }) => show ? <span className="badge draft">Нийтлээгүй (зөвхөн админд)</span> : null
+  ? <img className="portrait" src={url} alt={t(`${name} багшийн зураг`, `Photo of ${name}`)} />
+  : <div className="portrait img-placeholder" aria-label={t('Зураг хараахан ороогүй', 'No photo yet')}>{t('Зураг ороогүй', 'No photo yet')}</div>
+const Draft = ({ show }) => show ? <span className="badge draft">{t('Нийтлээгүй (зөвхөн админд)', 'Unpublished (admin only)')}</span> : null
 
 export function TeachersPage() {
   const { data, error, loading, reload } = useLoad(async () => {
@@ -15,8 +16,8 @@ export function TeachersPage() {
     return { teachers, urls: await signedUrls(teachers.map((t) => t.photo_path)) }
   }, [])
   return <section className="section">
-    <h1>Багш нар</h1>
-    <LoadState loading={loading} error={error} reload={reload} empty={!data?.teachers.length} emptyText="Нийтлэгдсэн багшийн мэдээлэл одоогоор алга.">
+    <h1>{t('Багш нар', 'Teachers')}</h1>
+    <LoadState loading={loading} error={error} reload={reload} empty={!data?.teachers.length} emptyText={t('Нийтлэгдсэн багшийн мэдээлэл одоогоор алга.', 'No published teacher profiles yet.')}>
       <div className="grid">{data?.teachers.map((t) => <article key={t.id} className="card teacher-card">
         <Portrait url={data.urls[t.photo_path]} name={t.name} />
         <Draft show={!t.published} />
@@ -35,7 +36,7 @@ export function TeacherDetailPage() {
   }, [id])
   const t = data?.teacher
   return <section className="section">
-    <LoadState loading={loading} error={error} reload={reload} empty={!t} emptyText="Багш олдсонгүй.">
+    <LoadState loading={loading} error={error} reload={reload} empty={!t} emptyText={t('Багш олдсонгүй.', 'Teacher not found.')}>
       {t && <article className="detail teacher-detail">
         <Portrait url={data.urls[t.photo_path]} name={t.name} />
         <div>
@@ -43,11 +44,11 @@ export function TeacherDetailPage() {
           <h1>{t.name}</h1>
           {t.position && <p className="meta">{t.position}</p>}
           {t.bio && <p className="prose">{t.bio}</p>}
-          {t.courses.length > 0 && <><h2>Заадаг хичээлүүд</h2><ul>{t.courses.map((c) => <li key={c}>{c}</li>)}</ul></>}
-          {t.source_url && <p className="meta">Эх сурвалж: <a href={t.source_url} target="_blank" rel="noopener noreferrer">СЭЗИС-ийн багшийн профайл</a></p>}
+          {t.courses.length > 0 && <><h2>{t('Заадаг хичээлүүд', 'Courses taught')}</h2><ul>{t.courses.map((c) => <li key={c}>{c}</li>)}</ul></>}
+          {t.source_url && <p className="meta">{t('Эх сурвалж', 'Source')}: <a href={t.source_url} target="_blank" rel="noopener noreferrer">{t('СЭЗИС-ийн багшийн профайл', 'UFE staff profile')}</a></p>}
         </div>
       </article>}
     </LoadState>
-    <Link to="/teachers">← Бүх багш</Link>
+    <Link to="/teachers">← {t('Бүх багш', 'All teachers')}</Link>
   </section>
 }

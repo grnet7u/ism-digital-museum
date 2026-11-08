@@ -2,7 +2,7 @@
 
 Reference: `reference/ufe-design-reference.png`, provided by student. Browser chrome/taskbar are not part of the design. Palette below is an approximation, NOT an official brand specification.
 
-Primary #0647F7; deep blue #08045B; background #F5F7FB; surface #FFFFFF; text #172033; muted #536079; border #DEE5EF. Font: Montserrat (Google Fonts, cyrillic-ext covers Ө/Ү; falls back to system-ui offline). Style (2026-11-08): light glassmorphism — soft blue/violet gradient field on body, translucent white surfaces with backdrop blur, sticky frosted header on desktop (static on mobile), pill navigation, 44px+ controls, generous padding. Use strong readable headings and calm whitespace. Button radius 8px, card 12–16px, spacing multiples of 4/8. Visible focus and accessible contrast.
+Primary #0647F7; deep blue #08045B; background #F5F7FB; surface #FFFFFF; text #172033; muted #536079; border #DEE5EF. Font: Montserrat (Google Fonts, cyrillic-ext covers Ө/Ү; falls back to system-ui offline). Style (2026-11-08): light glassmorphism — soft blue/violet gradient field on body, translucent white surfaces with backdrop blur, sticky frosted header on desktop (static on mobile), pill navigation, 44px+ controls, generous padding. Light and dark themes share tokens (`--text`, `--surface`, `--border`, `--link`…); UI language MN (default) or EN. Use strong readable headings and calm whitespace. Button radius 8px, card 12–16px, spacing multiples of 4/8. Visible focus and accessible contrast.
 
 Header: approved UFE logo asset (not screenshot crop), product name, navigation, login. Until an authentic reusable asset is supplied, use plain text product branding; don't draw an imitation official logo.
 

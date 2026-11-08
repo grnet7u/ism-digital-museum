@@ -1,11 +1,22 @@
 /* Base tokens and layout. Glass surfaces need the soft colour field on body to show through. */
 :root {
   font-family: 'Montserrat', system-ui, sans-serif;
-  color: #172033;
+  color: var(--text);
   font-synthesis: none;
   --primary: #0647f7;
   --navy: #08045b;
   --muted: #4a5670;
+  --text: #172033;
+  --surface: #ffffff;
+  --border: #dee5ef;
+  --border-strong: #c3cddc;
+  --tint: #eaf0ff;
+  --tag-text: #08045b;
+  --bar-a: #08045b;
+  --input-bg: rgba(255, 255, 255, 0.85);
+  --link: #0647f7;
+  --bg: #f3f6fc;
+  color-scheme: light;
   --glass: rgba(255, 255, 255, 0.62);
   --glass-strong: rgba(255, 255, 255, 0.82);
   --glass-border: rgba(255, 255, 255, 0.75);
@@ -22,10 +33,11 @@ body {
     radial-gradient(900px 600px at 0% 0%, rgba(6, 71, 247, 0.16), transparent 60%),
     radial-gradient(800px 600px at 100% 20%, rgba(124, 58, 237, 0.13), transparent 60%),
     radial-gradient(900px 700px at 50% 100%, rgba(14, 165, 233, 0.12), transparent 60%),
-    #f3f6fc;
+    var(--bg);
   background-attachment: fixed;
+  color: var(--text);
 }
-a { color: var(--primary) }
+a { color: var(--link) }
 a:focus-visible, button:focus-visible, summary:focus-visible { outline: 3px solid #ffb000; outline-offset: 3px; border-radius: 6px }
 h1, h2, h3 { letter-spacing: -0.01em; line-height: 1.2 }
 
@@ -40,7 +52,7 @@ header {
   box-shadow: 0 4px 24px rgba(8, 4, 91, 0.06);
 }
 .brand { font-weight: 800; font-size: 22px; text-decoration: none }
-.brand span { color: #172033; font-size: 16px; font-weight: 700 }
+.brand span { color: var(--text); font-size: 16px; font-weight: 700 }
 nav { display: flex; gap: 4px; flex-wrap: wrap; flex: 1 }
 nav a { text-decoration: none; color: var(--muted); font-size: 14px; font-weight: 600; padding: 10px 14px; border-radius: 999px; transition: background .15s, color .15s }
 nav a:hover { background: rgba(6, 71, 247, 0.08); color: var(--primary) }
@@ -78,7 +90,7 @@ nav a.active { background: var(--primary); color: white }
 .section h1 { font-size: clamp(28px, 4vw, 40px); font-weight: 800; margin: 0 0 16px }
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px }
 .card {
-  padding: 28px; border-radius: var(--radius); text-decoration: none; color: #172033;
+  padding: 28px; border-radius: var(--radius); text-decoration: none; color: var(--text);
   background: var(--glass); border: 1px solid var(--glass-border); box-shadow: var(--glass-shadow);
   backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
   transition: transform .2s, box-shadow .2s;
@@ -103,3 +115,81 @@ footer { padding: 32px 24px; text-align: center; color: var(--muted); font-size:
   .card { padding: 22px }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+
+/* Dark theme: same tokens, darker values (set by the header toggle or the OS preference) */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --text: #e6ebf5;
+  --muted: #a3aec4;
+  --surface: #151b2e;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --tint: rgba(110, 150, 255, 0.16);
+  --tag-text: #c7d6ff;
+  --bar-a: #8b7cf6;
+  --input-bg: rgba(16, 22, 40, 0.85);
+  --link: #8fb0ff;
+  --bg: #0b1020;
+  --glass: rgba(21, 27, 46, 0.62);
+  --glass-strong: rgba(14, 19, 36, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+:root[data-theme='dark'] .error { background: rgba(240, 68, 56, 0.15); color: #fda29b }
+:root[data-theme='dark'] .notice, :root[data-theme='dark'] .badge.published { background: rgba(18, 183, 106, 0.15); color: #75e0a7 }
+:root[data-theme='dark'] .note, :root[data-theme='dark'] .badge.pending { background: rgba(247, 144, 9, 0.15); color: #fec84b }
+:root[data-theme='dark'] .badge.draft { background: rgba(255, 255, 255, 0.1); color: #d0d5dd }
+:root[data-theme='dark'] .setup-note { background: var(--tint); color: var(--text) }
+
+/* Header toggles */
+.toggles { display: flex; gap: 6px }
+.toggle { min-width: 44px; min-height: 44px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--input-bg); color: var(--text); font: inherit; font-weight: 700; font-size: 14px; cursor: pointer }
+.toggle:hover { border-color: var(--primary) }
+
+/* Footer */
+.site-footer { margin-top: 64px; padding: 48px max(16px, 4%) 24px; text-align: left; background: var(--glass); border-top: 1px solid var(--glass-border); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur) }
+.footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.4fr; gap: 32px }
+.site-footer h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .08em; margin: 0 0 12px; color: var(--text) }
+.site-footer p { margin: 12px 0 0; color: var(--muted); font-size: 14px; line-height: 1.7 }
+.site-footer nav { display: flex; flex-direction: column; gap: 8px; flex: none }
+.site-footer nav a { padding: 0; color: var(--muted); font-size: 14px; border-radius: 4px }
+.site-footer nav a:hover { background: none; color: var(--link) }
+.footer-bottom { max-width: 1200px; margin: 32px auto 0 !important; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; font-size: 13px !important }
+
+/* Demo chat */
+.chat-fab { position: fixed; right: 20px; bottom: 20px; z-index: 30; width: 60px; height: 60px; border-radius: 50%; border: 0; cursor: pointer; color: white; font-size: 28px; line-height: 1; display: grid; place-items: center; background: linear-gradient(135deg, #0647f7, #7c3aed); box-shadow: 0 12px 30px rgba(6, 71, 247, 0.4); transition: transform .15s }
+.chat-fab:hover { transform: scale(1.06) }
+.chat-panel { position: fixed; right: 20px; bottom: 92px; z-index: 30; width: min(380px, calc(100vw - 32px)); height: min(540px, calc(100vh - 120px)); display: flex; flex-direction: column; border-radius: 22px; overflow: hidden; background: var(--glass-strong); border: 1px solid var(--glass-border); box-shadow: 0 24px 60px rgba(8, 4, 91, 0.25); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur) }
+.chat-head { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; color: white; background: linear-gradient(135deg, #08045b, #0647f7) }
+.chat-head div { display: grid }
+.chat-head span { font-size: 12px; opacity: .8 }
+.chat-close { width: 36px; height: 36px; border: 0; border-radius: 10px; background: rgba(255, 255, 255, 0.15); color: white; font-size: 22px; cursor: pointer }
+.chat-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px }
+.msg { max-width: 85%; margin: 0; padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5 }
+.msg p { margin: 0 }
+.msg.bot { align-self: flex-start; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-bottom-left-radius: 4px }
+.msg.user { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px }
+.msg-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px !important }
+.msg-links a { font-weight: 700; font-size: 13px }
+.typing { display: flex; gap: 4px }
+.typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: blink 1s infinite }
+.typing span:nth-child(2) { animation-delay: .15s } .typing span:nth-child(3) { animation-delay: .3s }
+@keyframes blink { 50% { opacity: .25 } }
+.chat-suggest { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 16px 10px }
+.chat-suggest button { font: inherit; font-size: 13px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border-strong); background: var(--input-bg); color: var(--link); cursor: pointer }
+.chat-input { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border) }
+.chat-input input { flex: 1; min-width: 0; min-height: 44px; font: inherit; font-size: 14px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border-strong); background: var(--input-bg); color: var(--text) }
+.chat-input .button { padding: 10px 16px; box-shadow: none }
+.chat-input .button:disabled { opacity: .5 }
+
+@media (max-width: 800px) { .footer-grid { grid-template-columns: 1fr 1fr } }
+@media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr } .chat-fab { right: 16px; bottom: 16px } .chat-panel { right: 16px; bottom: 84px } }
+@media (prefers-reduced-motion: reduce) { .typing span { animation: none } }
+@media (max-width: 800px) { .toggles { margin-left: auto } header .login { margin-left: 0 } }
+:root[data-theme='dark'] .link-button.danger { color: #f97066 }
+@media (max-width: 480px) {
+  header { gap: 8px }
+  .toggle { min-width: 40px; min-height: 40px }
+  header .login { padding: 10px 14px; min-height: 40px }
+}
+@media (max-width: 400px) { header .brand span { display: none } }

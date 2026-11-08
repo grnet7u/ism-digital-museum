@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { useAuth } from '../features/auth/auth-context'
+import { t } from '../features/prefs/prefs-context'
 
 /** The Supabase client reads the confirmation token from this URL itself (detectSessionInUrl). */
 export default function AuthCallbackPage() {
@@ -12,9 +13,9 @@ export default function AuthCallbackPage() {
 
   if (user) return <Navigate to="/my-works" replace />
   if (urlError || (timedOut && !loading)) return <section className="section narrow">
-    <h1>Баталгаажуулалт амжилтгүй</h1>
-    <p className="error" role="alert">{urlError ?? 'Холбоос хүчингүй эсвэл хугацаа нь дууссан байж магадгүй.'}</p>
-    <Link to="/login">Нэвтрэх хуудас руу</Link>
+    <h1>{t('Баталгаажуулалт амжилтгүй', 'Confirmation failed')}</h1>
+    <p className="error" role="alert">{urlError ?? t('Холбоос хүчингүй эсвэл хугацаа нь дууссан байж магадгүй.', 'The link may be invalid or expired.')}</p>
+    <Link to="/login">{t('Нэвтрэх хуудас руу', 'Go to login')}</Link>
   </section>
-  return <p className="section" role="status">Баталгаажуулж байна…</p>
+  return <p className="section" role="status">{t('Баталгаажуулж байна…', 'Confirming…')}</p>
 }

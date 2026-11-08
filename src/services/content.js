@@ -1,3 +1,4 @@
+import { t } from '../features/prefs/prefs-context'
 import { supabase } from '../lib/supabase'
 import { removeImages, uploadImage } from './storage'
 
@@ -56,7 +57,7 @@ export async function saveContent(table, { id, ...row }, { file, folder, imageFi
 export async function deleteContent(table, id, paths = []) {
   const { data, error } = await supabase.from(table).delete().eq('id', id).select('id')
   if (error) throw error
-  if (!data.length) throw new Error('Устгах эрхгүй эсвэл бичлэг олдсонгүй.')
+  if (!data.length) throw new Error(t('Устгах эрхгүй эсвэл бичлэг олдсонгүй.', 'Not allowed to delete, or the record was not found.'))
   return { cleanupFailed: !(await removeImages(paths)) }
 }
 

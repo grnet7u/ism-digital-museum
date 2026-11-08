@@ -1,3 +1,4 @@
+import { t } from '../features/prefs/prefs-context'
 import { supabase } from '../lib/supabase'
 import { parseTechnologies } from '../features/exhibits/validate'
 import { removeImages, uploadImage } from './storage'
@@ -64,7 +65,7 @@ export async function saveExhibit({ id, userId, form, file, oldImagePath, status
 export async function deleteExhibit(exhibit) {
   const { data, error } = await supabase.from('exhibits').delete().eq('id', exhibit.id).select('id')
   if (error) throw error
-  if (!data.length) throw new Error('Устгах эрхгүй эсвэл бүтээл олдсонгүй.')
+  if (!data.length) throw new Error(t('Устгах эрхгүй эсвэл бүтээл олдсонгүй.', 'Not allowed to delete, or the work was not found.'))
   return { cleanupFailed: !(await removeImages([exhibit.image_path])) }
 }
 

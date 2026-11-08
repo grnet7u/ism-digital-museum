@@ -6,6 +6,7 @@ import { getExhibit, listCategories, saveExhibit } from '../services/exhibits'
 import { signedUrls } from '../services/storage'
 import LoadState from '../components/LoadState'
 import { validateExhibit, validateImage } from '../features/exhibits/validate'
+import { t } from '../features/prefs/prefs-context'
 
 const emptyForm = { title: '', description: '', year_created: String(new Date().getFullYear()), category_id: '', technologies: '', demo_url: '', github_url: '' }
 const toForm = (e) => ({ title: e.title, description: e.description, year_created: String(e.year_created ?? ''), category_id: e.category_id ?? '',
@@ -22,8 +23,8 @@ export default function ExhibitFormPage() {
   // Only the owner edits here; RLS rejects other users anyway.
   const notOwn = id && data && data.exhibit?.creator_id !== user.id
   return <section className="section narrow-wide">
-    <h1>{id ? 'Бүтээл засах' : 'Шинэ бүтээл'}</h1>
-    <LoadState loading={loading} error={error} reload={reload} empty={notOwn} emptyText="Бүтээл олдсонгүй эсвэл таны бүтээл биш.">
+    <h1>{id ? t('Бүтээл засах', 'Edit work') : t('Шинэ бүтээл', 'New work')}</h1>
+    <LoadState loading={loading} error={error} reload={reload} empty={notOwn} emptyText={t('Бүтээл олдсонгүй эсвэл таны бүтээл биш.', 'Work not found or not yours.')}>
       {data && !notOwn && <ExhibitForm key={id ?? 'new'} {...data} userId={user.id} />}
     </LoadState>
   </section>
@@ -52,9 +53,9 @@ function ExhibitForm({ categories, exhibit, imageUrl, userId }) {
     try {
       const { cleanupFailed } = await saveExhibit({ id: exhibit?.id, userId, form, file, oldImagePath: exhibit?.image_path, status })
       navigate('/my-works', { replace: true, state: { notice: cleanupFailed
-        ? 'Хадгаллаа, гэхдээ хуучин зургийг устгаж чадсангүй.' : status === 'draft' ? 'Ноорог хадгаллаа.' : 'Хадгалж, хянуулахаар илгээлээ.' } })
+        ? t('Хадгаллаа, гэхдээ хуучин зургийг устгаж чадсангүй.', 'Saved, but the old image could not be removed.') : status === 'draft' ? t('Ноорог хадгаллаа.', 'Draft saved.') : t('Хадгалж, хянуулахаар илгээлээ.', 'Saved and submitted for review.') } })
     } catch (err) {
-      setSaveError(`Хадгалж чадсангүй: ${err.message}`)
+      setSaveError(`${t('Хадгалж чадсангүй', 'Could not save')}: ${err.message}`)
     } finally { setBusy(false) }
   }
 
@@ -62,26 +63,26 @@ function ExhibitForm({ categories, exhibit, imageUrl, userId }) {
   const aria = (name) => ({ name, 'aria-invalid': Boolean(errors[name]), 'aria-describedby': errors[name] ? `${name}-error` : undefined })
 
   return <form className="form" onSubmit={(e) => { e.preventDefault(); submit('pending') }} noValidate>
-    {exhibit?.status === 'published' && <p className="notice">Энэ бүтээл нийтлэгдсэн. Засвар хадгалахад дахин админы хяналтад орно.</p>}
-    {exhibit?.moderation_note && <p className="note">Админы тэмдэглэл: {exhibit.moderation_note}</p>}
-    {field('title', 'Гарчиг *', <input {...aria('title')} value={form.title} onChange={change} maxLength={150} required />)}
-    {field('description', 'Тайлбар', <textarea {...aria('description')} value={form.description} onChange={change} rows={6} maxLength={5000} />)}
+    {exhibit?.status === 'published' && <p className="notice">{t('Энэ бүтээл нийтлэгдсэн. Засвар хадгалахад дахин админы хяналтад орно.', 'This work is published. Saving changes sends it back to admin review.')}</p>}
+    {exhibit?.moderation_note && <p className="note">{t('Админы тэмдэглэл', 'Admin note')}: {exhibit.moderation_note}</p>}
+    {field('title', t('Гарчиг *', 'Title *'), <input {...aria('title')} value={form.title} onChange={change} maxLength={150} required />)}
+    {field('description', t('Тайлбар', 'Description'), <textarea {...aria('description')} value={form.description} onChange={change} rows={6} maxLength={5000} />)}
     <div className="form-row">
-      {field('year_created', 'Он *', <input {...aria('year_created')} type="number" value={form.year_created} onChange={change} min={1990} required />)}
-      {field('category_id', 'Ангилал *', <select {...aria('category_id')} value={form.category_id} onChange={change} required>
-        <option value="">Сонгох…</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+      {field('year_created', t('Он *', 'Year *'), <input {...aria('year_created')} type="number" value={form.year_created} onChange={change} min={1990} required />)}
+      {field('category_id', t('Ангилал *', 'Category *'), <select {...aria('category_id')} value={form.category_id} onChange={change} required>
+        <option value="">{t('Сонгох…', 'Choose…')}</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
       </select>)}
     </div>
-    {field('technologies', 'Технологиуд (таслалаар тусгаарла)', <input {...aria('technologies')} value={form.technologies} onChange={change} placeholder="React, Supabase, PostgreSQL" />)}
-    {field('demo_url', 'Demo холбоос', <input {...aria('demo_url')} type="url" value={form.demo_url} onChange={change} placeholder="https://" />)}
-    {field('github_url', 'GitHub холбоос', <input {...aria('github_url')} type="url" value={form.github_url} onChange={change} placeholder="https://github.com/…" />)}
-    {field('image', 'Зураг (JPEG/PNG/WebP, 5 MB хүртэл)', <input name="image" type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0] ?? null)} />)}
-    {(preview || imageUrl) && <img className="preview" src={preview || imageUrl} alt="Сонгосон зургийн урьдчилсан харагдац" />}
+    {field('technologies', t('Технологиуд (таслалаар тусгаарла)', 'Technologies (comma-separated)'), <input {...aria('technologies')} value={form.technologies} onChange={change} placeholder="React, Supabase, PostgreSQL" />)}
+    {field('demo_url', t('Demo холбоос', 'Demo link'), <input {...aria('demo_url')} type="url" value={form.demo_url} onChange={change} placeholder="https://" />)}
+    {field('github_url', t('GitHub холбоос', 'GitHub link'), <input {...aria('github_url')} type="url" value={form.github_url} onChange={change} placeholder="https://github.com/…" />)}
+    {field('image', t('Зураг (JPEG/PNG/WebP, 5 MB хүртэл)', 'Image (JPEG/PNG/WebP, up to 5 MB)'), <input name="image" type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0] ?? null)} />)}
+    {(preview || imageUrl) && <img className="preview" src={preview || imageUrl} alt={t('Сонгосон зургийн урьдчилсан харагдац', 'Preview of the selected image')} />}
     {saveError && <p className="error" role="alert">{saveError}</p>}
     <div className="actions">
-      <button className="button" disabled={busy}>{busy ? 'Хадгалж байна…' : 'Хадгалаад хянуулах'}</button>
-      <button type="button" className="button secondary-light" disabled={busy} onClick={() => submit('draft')}>Ноорог болгон хадгалах</button>
-      <Link to="/my-works">Болих</Link>
+      <button className="button" disabled={busy}>{busy ? t('Хадгалж байна…', 'Saving…') : t('Хадгалаад хянуулах', 'Save and submit')}</button>
+      <button type="button" className="button secondary-light" disabled={busy} onClick={() => submit('draft')}>{t('Ноорог болгон хадгалах', 'Save as draft')}</button>
+      <Link to="/my-works">{t('Болих', 'Cancel')}</Link>
     </div>
   </form>
 }
