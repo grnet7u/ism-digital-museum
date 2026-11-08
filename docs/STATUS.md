@@ -47,7 +47,8 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 - Vercel: https://ism-digital-museum-five.vercel.app (first build had no VITE_ env vars -> "Supabase not configured"; fixed by adding them and redeploying).
 - Bug: teacher detail page crashed (a local `t` shadowed the translation `t()`), fixed in 101c92b; remaining `t` loop variables renamed so it cannot recur.
 - Smoke test (headless Chrome, MN and EN): 11 routes + every teacher/event/creator/exhibit detail page, 68 visits on production and on localhost, no page errors, no empty pages. The only FAIL was lazy images below the fold; after scrolling all 9 /exhibits images load.
-- Not yet done: login/admin/photo upload on production, Supabase Site URL/redirects check.
+- Production as admin (already signed in): /admin loads, Teachers tab edit form shows the photo field (JPEG/PNG/WebP). `npm run rls-check` with the new admin account: all checks PASS. Student set Supabase Site URL + /auth/callback redirect to the Vercel domain.
+- Not verified: an actual photo upload on production (avoided putting a test image on a real teacher), signup e-mail flow.
 
 ## Next action
-Student sets the Supabase Site URL/redirect to the Vercel domain; then check login + admin teacher photo upload on production and add the URL to README/config.toml.
+Student uploads real teacher photos (with consent) via Admin → Teachers; then screenshots for docs.

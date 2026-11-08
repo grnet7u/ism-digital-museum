@@ -4,7 +4,7 @@ UFE, Мэдээллийн системийн менежментийн тэнхи
 
 Тэнхимийн багш нар, арга хэмжээ, түүх, оюутны бүтээлүүдийг нэг дор үзүүлж, бүтээлүүдэд ашигласан технологийн хувьслыг оноор харьцуулна.
 
-**Production URL:** _(Vercel-д байршуулсны дараа энд бичнэ)_
+**Production URL:** https://ism-digital-museum-five.vercel.app  ·  **GitHub:** https://github.com/grnet7u/ism-digital-museum
 
 ## Боломжууд
 

@@ -2,8 +2,9 @@
 project_id = "ism-digital-museum"
 
 [auth]
+# Local CLI value; the hosted project's Site URL (dashboard) is https://ism-digital-museum-five.vercel.app
 site_url = "http://127.0.0.1:5173"
-additional_redirect_urls = ["http://127.0.0.1:5173/auth/callback", "http://localhost:5173/auth/callback"]
+additional_redirect_urls = ["https://ism-digital-museum-five.vercel.app/auth/callback", "http://127.0.0.1:5173/auth/callback", "http://localhost:5173/auth/callback"]
 
 [auth.email]
 enable_confirmations = true
