@@ -9,10 +9,18 @@ const check = ({ data, error }) => { if (error) throw error; return data }
 export const listCategories = async () =>
   check(await supabase.from('exhibition_categories').select('id, name').order('name'))
 
+const PAGE = 1000 // Supabase max rows per request; page so lists and charts are never silently cut
+
 export async function listPublishedExhibits({ creatorId } = {}) {
-  let query = supabase.from('exhibits').select(FIELDS).eq('status', 'published').order('year_created', { ascending: false })
-  if (creatorId) query = query.eq('creator_id', creatorId)
-  return check(await query)
+  const rows = []
+  for (let from = 0; ; from += PAGE) {
+    let query = supabase.from('exhibits').select(FIELDS).eq('status', 'published')
+      .order('year_created', { ascending: false }).order('id').range(from, from + PAGE - 1)
+    if (creatorId) query = query.eq('creator_id', creatorId)
+    const page = check(await query)
+    rows.push(...page)
+    if (page.length < PAGE) return rows
+  }
 }
 
 export const listMyExhibits = async (userId) =>

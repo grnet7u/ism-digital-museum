@@ -14,6 +14,7 @@ import { EventDetailPage, EventsPage } from './pages/EventPages'
 import { CreatorDetailPage, CreatorsPage } from './pages/CreatorPages'
 import HistoryPage from './pages/HistoryPage'
 import AdminPage from './pages/AdminPage'
+import EvolutionPage from './pages/EvolutionPage'
 import './App.css'
 
 const pages = [
@@ -30,9 +31,6 @@ function Home() {
   </section><section className="section"><h2>Музейтэй танилцах</h2><div className="grid">
     {pages.map(([path, title]) => <Link className="card" key={path} to={path}><h3>{title}</h3><span>Хэсгийг нээх →</span></Link>)}
   </div></section></>
-}
-function PendingPage({ title }) {
-  return <section className="section"><p className="eyebrow">ХӨГЖҮҮЛЭЛТИЙН СУУРЬ</p><h1>{title}</h1><p>Энэ хэсгийн өгөгдөл болон үйлдлүүдийг дараагийн үе шатанд холбоно.</p><Link to="/">Нүүр рүү буцах</Link></section>
 }
 function NotFound() {
   return <section className="section"><h1>Хуудас олдсонгүй</h1><p>Таны хайсан хаяг байхгүй байна.</p><Link to="/">Нүүр рүү буцах</Link></section>
@@ -57,7 +55,7 @@ export default function App() {
       <Route path="/history" element={<HistoryPage />} />
       <Route path="/creators" element={<CreatorsPage />} />
       <Route path="/creators/:id" element={<CreatorDetailPage />} />
-      <Route path="/evolution" element={<PendingPage title="Технологийн хувьсал" />} />
+      <Route path="/evolution" element={<EvolutionPage />} />
       <Route path="/exhibits" element={<ExhibitsPage />} />
       <Route path="/exhibits/:id" element={<ExhibitDetailPage />} />
       <Route path="/my-works/new" element={<RequireAuth><ExhibitFormPage /></RequireAuth>} />

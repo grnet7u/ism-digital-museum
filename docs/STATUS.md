@@ -1,4 +1,4 @@
-# Status — 2026-11-01
+# Status — 2026-11-08
 
 Owner: Claude Code. Codex owns the separate StudyMate project.
 
@@ -14,19 +14,23 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 - M2 exhibit slice: services (`src/services/exhibits.js`, `storage.js`), `/exhibits` list, `/exhibits/:id` detail (direct URL, not-found/permission shown alike), `/my-works` (status badges, admin note, submit-for-review, inline delete confirmation), `/my-works/new` + `/my-works/:id/edit` (validation, local preview, JPEG/PNG/WebP ≤5 MB). Upload → save row → remove new upload on failure; replacement deletes old file only after the row saves; delete removes row first, then file, and reports cleanup failure. Shared `useLoad` + `LoadState` give loading/error-with-retry/empty states.
 - M3 public content + admin: `/teachers`(+`/:id`), `/events`(+`/:id` album), `/history` timeline, `/creators`(+`/:id` linked to published works), creator profile editor on /my-works, `/admin` tabs (exhibit moderation: publish / return with note / revoke; teachers, events + album, history CRUD with image upload; categories add/delete with FK guard). `npm run seed-demo` adds [Demo] events/history/exhibits through the API. Teachers imported unpublished (see CONTENT inventory).
 
+- M4 search + Technology Evolution: `/exhibits` title search (case-insensitive) + year/category/technology filters combined, all in URL query (`q`, `year`, `category`, `tech`); typing replaces history, filter choice pushes (Back undoes it); reset and no-results state. `/evolution`: year timeline with per-year exhibit counts (links to filtered works), null-year works counted and excluded with a note, two-year selector (`?a=&b=`, default two latest), comparison bars on the union of technologies + accessible table whose counts drill down to `/exhibits?year=&tech=`. Pure logic in `src/features/evolution/aggregate.js` (normalizeTags, technologyCounts, yearSummary, compareYears) and `src/features/exhibits/filter.js`. `listPublishedExhibits` now pages with `.range()` in 1000-row steps so lists/charts are not silently truncated.
+
 ## Verified
 - 2026-11-01 `npm run rls-check` against live project: **33/33 PASS** (visitor/A/B/admin with publishable key only; storage cross-user upload/overwrite/delete denied, wrong MIME rejected, unpublished image unsigned for visitor, publish bypass/creator_id/moderation_note/self-promotion denied, edit-published → pending, admin publish and content write allowed). Cleanup verified: 0 exhibits, 0 teachers, 0 storage objects after run.
 - `npm run check` PASS — oxlint clean (0 warnings), Vitest 4 files / 12 tests (incl. upload/save compensation with mocked client), build OK.
 - 2026-11-01 browser (Chrome, localhost:5173) as creator A: login → empty-form validation errors → create draft with PNG (preview shown, duplicate tag 'react' removed) → edit with javascript: URL rejected → valid edit saved as pending → full reload keeps session and status → replace image (DB check: new path, 1 object, old file gone) → cancel delete → confirm delete. DB afterwards: 0 exhibits, 0 storage objects.
 - 2026-11-01 M3 headless Chrome (visitor, clean profile): /history, /events, /events/:id (3 signed album images), /teachers (unpublished hidden → empty state), /teachers/:id (not found for visitor), /creators, /creators/:id (4 works), /exhibits (9), /exhibits/:id, unknown route and unknown id messages.
 - 2026-11-01 M3 logged-in UI (puppeteer-core + installed Chrome, script kept outside repo): 12/12 PASS — admin queue, 10 unpublished teachers, prefilled teacher form, add + delete category, in-use category delete refused (FK restrict), return-with-note then publish → visitor reads, creator profile save, creator blocked from /admin, logout + protected-route redirect, no page errors.
+- 2026-11-08 `npm run check` PASS — oxlint clean, Vitest 4 files / 16 tests (added yearSummary, compareYears union/empty year, combined filters), build OK (chunk-size warning only).
+- 2026-11-08 headless Chrome against live data (visitor): `/evolution` shows 2022–2025 (2/2/2/3 works); `/evolution?a=2022&b=2025` union table (react 0/2, supabase 0/2, php 1/0 …); `/exhibits?year=2025&tech=react` → 2 / 9 correct works; `/exhibits?q=zzzz` → 0 / 9 with reset. NOT yet checked by clicking: Back-button behaviour, select changes, 360px layout (M5).
 - Login and reload session restore verified in browser (above). Logout verified (M3). NOT yet checked: register → confirmation e-mail → callback. Default Supabase SMTP only delivers to org members and is rate-limited; demo should log in with prepared accounts.
 
 ## Remaining
 - Not UI-tested: admin album photo upload/delete and teacher photo upload (same storage path code as exhibits; album uploads verified via seed API).
 - Student decisions: which teachers to publish (permission), real teacher photos, real events/history to replace [Demo].
 - The student's own Chrome window froze on Supabase dashboard and later on localhost while the extension was attached; a clean Chrome instance renders all pages, so treat it as a browser/extension issue.
-- M4 search + Evolution UI; M5 deploy (GitHub remote, Vercel) and docs.
+- M5 deploy (GitHub remote, Vercel) and docs; manual click-through of M4 filters/Back and narrow screens.
 
 ## Next action
-M4: URL-synced search/filters on /exhibits and the Technology Evolution page (timeline, per-year counts, two-year comparison, drill-down).
+M5: responsive/accessibility pass, Vercel deploy + Supabase production auth URLs, README/demo script.
