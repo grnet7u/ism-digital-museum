@@ -15,6 +15,7 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 - M3 public content + admin: `/teachers`(+`/:id`), `/events`(+`/:id` album), `/history` timeline, `/creators`(+`/:id` linked to published works), creator profile editor on /my-works, `/admin` tabs (exhibit moderation: publish / return with note / revoke; teachers, events + album, history CRUD with image upload; categories add/delete with FK guard). `npm run seed-demo` adds [Demo] events/history/exhibits through the API. Teachers imported unpublished (see CONTENT inventory).
 
 - M4 search + Technology Evolution: `/exhibits` title search (case-insensitive) + year/category/technology filters combined, all in URL query (`q`, `year`, `category`, `tech`); typing replaces history, filter choice pushes (Back undoes it); reset and no-results state. `/evolution`: year timeline with per-year exhibit counts (links to filtered works), null-year works counted and excluded with a note, two-year selector (`?a=&b=`, default two latest), comparison bars on the union of technologies + accessible table whose counts drill down to `/exhibits?year=&tech=`. Pure logic in `src/features/evolution/aggregate.js` (normalizeTags, technologyCounts, yearSummary, compareYears) and `src/features/exhibits/filter.js`. `listPublishedExhibits` now pages with `.range()` in 1000-row steps so lists/charts are not silently truncated.
+- M5 (local part): zero-count comparison bars rendered as plain text; ERD in ARCHITECTURE updated to the applied migration; README rewritten (features, structure, commands, Demo-content note); DEPLOYMENT has exact Vercel/Supabase values and post-deploy checks. Deployment itself is done by the student.
 
 ## Verified
 - 2026-11-01 `npm run rls-check` against live project: **33/33 PASS** (visitor/A/B/admin with publishable key only; storage cross-user upload/overwrite/delete denied, wrong MIME rejected, unpublished image unsigned for visitor, publish bypass/creator_id/moderation_note/self-promotion denied, edit-published → pending, admin publish and content write allowed). Cleanup verified: 0 exhibits, 0 teachers, 0 storage objects after run.
@@ -24,13 +25,15 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 - 2026-11-01 M3 logged-in UI (puppeteer-core + installed Chrome, script kept outside repo): 12/12 PASS — admin queue, 10 unpublished teachers, prefilled teacher form, add + delete category, in-use category delete refused (FK restrict), return-with-note then publish → visitor reads, creator profile save, creator blocked from /admin, logout + protected-route redirect, no page errors.
 - 2026-11-08 `npm run check` PASS — oxlint clean, Vitest 4 files / 16 tests (added yearSummary, compareYears union/empty year, combined filters), build OK (chunk-size warning only).
 - 2026-11-08 headless Chrome against live data (visitor): `/evolution` shows 2022–2025 (2/2/2/3 works); `/evolution?a=2022&b=2025` union table (react 0/2, supabase 0/2, php 1/0 …); `/exhibits?year=2025&tech=react` → 2 / 9 correct works; `/exhibits?q=zzzz` → 0 / 9 with reset. NOT yet checked by clicking: Back-button behaviour, select changes, 360px layout (M5).
+- 2026-11-08 M5 puppeteer-core (scratchpad, outside repo) against live data: **41/41 PASS** — no horizontal overflow at 360/768/1280px on 10 routes; year→tech filters write URL (2 / 9), no-results state, reload keeps filters, Back removes only the last filter, reset; evolution drill-down opens `/exhibits?year=2025&tech=react`, Back restores `?a=2022&b=2025`, year selector updates URL; Tab focus outline visible; no page errors. `npm run check` PASS after changes (16 tests).
+- 2026-11-08 secret scan: tracked files contain only `.env.example`; no keys/passwords/teacher seed/research in any commit. `docs/CONTENT.md` lists the 10 teacher names (no other personal data).
 - Login and reload session restore verified in browser (above). Logout verified (M3). NOT yet checked: register → confirmation e-mail → callback. Default Supabase SMTP only delivers to org members and is rate-limited; demo should log in with prepared accounts.
 
 ## Remaining
 - Not UI-tested: admin album photo upload/delete and teacher photo upload (same storage path code as exhibits; album uploads verified via seed API).
 - Student decisions: which teachers to publish (permission), real teacher photos, real events/history to replace [Demo].
 - The student's own Chrome window froze on Supabase dashboard and later on localhost while the extension was attached; a clean Chrome instance renders all pages, so treat it as a browser/extension issue.
-- M5 deploy (GitHub remote, Vercel) and docs; manual click-through of M4 filters/Back and narrow screens.
+- Student deploys: GitHub remote + push, Vercel import + env vars, Supabase Site URL/redirects (values in DEPLOYMENT.md). Then: production URL in README and config.toml, deployed-URL checks, screenshots for docs.
 
 ## Next action
-M5: responsive/accessibility pass, Vercel deploy + Supabase production auth URLs, README/demo script.
+After the student shares the Vercel URL: run the post-deploy checks from DEPLOYMENT.md against it, record results, add URL + screenshots to README.

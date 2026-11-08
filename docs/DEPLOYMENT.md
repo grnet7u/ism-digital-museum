@@ -19,6 +19,21 @@ Select correct organization/project; schema, RLS, storage and reviewed seed data
 5. Configure Supabase Site URL and allowed callback URLs for actual deployment and localhost. Rebuild if env values change.
 6. Verify nested-route refresh, signup/login/logout, Storage and RLS on deployed URL. Ensure assignment reviewer can access public demo without Vercel login protection.
 
+### Exact values for this project (student deploys manually)
+
+| Where | Setting | Value |
+|---|---|---|
+| GitHub | new repo | `ism-digital-museum` (empty, no README); `git remote add origin <url>` then `git push -u origin main` |
+| Vercel → Import | Framework / Root / Build / Output | Vite / `./` / `npm run build` / `dist` (also in `vercel.json`) |
+| Vercel → Environment Variables | `VITE_SUPABASE_URL` | `https://csggzcpmjisspzkxrhky.supabase.co` |
+| Vercel → Environment Variables | `VITE_SUPABASE_PUBLISHABLE_KEY` | same publishable key as `.env.local` (never the secret key) |
+| Vercel → Settings → Deployment Protection | Vercel Authentication | Off for Production, so the reviewer opens it without logging in |
+| Supabase → Authentication → URL Configuration | Site URL | `https://<vercel-domain>` |
+| Supabase → Authentication → URL Configuration | Redirect URLs (add, keep local ones) | `https://<vercel-domain>/auth/callback` |
+| `supabase/config.toml` | `site_url`, `additional_redirect_urls` | mirror the dashboard values and commit (dashboard is the source of truth for the hosted project) |
+
+Post-deploy checks: open `/exhibits?year=2025` and `/events/<id>` directly and press refresh (SPA fallback); images load signed-out; `/evolution` drill-down; log in with the admin demo account; `/admin` refused for creator A. Optional: `npm run rls-check` is URL-independent (it talks to Supabase), so its local result already covers RLS. Default Supabase SMTP only mails org members and is rate-limited, so test signup with your own address or demo with prepared accounts.
+
 No custom domain, server, CI deploy token or paid service is needed for this scaffold. Git integration is sufficient. Netlify is an allowed assignment alternative, but do not maintain two hosting pipelines.
 
 Rollback frontend to known-good deployment if needed. Database changes require their own reviewed rollback or forward fix; reverting frontend does not revert DB. Never delete a production table to repair demo data.

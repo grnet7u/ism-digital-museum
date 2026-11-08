@@ -1,40 +1,64 @@
 # ISM Digital Museum
 
-UFE Интернет програмчлалын бие даалт. **Хөгжүүлэгч: Claude Code.**
-Энэ repository нь ажиллах суурь орчин, дэлгэрэнгүй хэрэгжүүлэх төлөвлөгөөтэй. Бүх функц дуусаагүй.
+UFE, Мэдээллийн системийн менежментийн тэнхимийн цахим музей. Интернет програмчлалын бие даалт.
 
-## Эхлэх
+Тэнхимийн багш нар, арга хэмжээ, түүх, оюутны бүтээлүүдийг нэг дор үзүүлж, бүтээлүүдэд ашигласан технологийн хувьслыг оноор харьцуулна.
 
-Node 24.x, npm. Сангууд энэ компьютерт суусан; өөр компьютерт `npm ci`.
+**Production URL:** _(Vercel-д байршуулсны дараа энд бичнэ)_
 
-```powershell
-npm run dev
+## Боломжууд
+
+| Хэсэг | Зам | Хэн |
+|---|---|---|
+| Бүтээлүүд: гарчгаар хайх, он/ангилал/технологиор шүүх (URL-д хадгалагдана) | `/exhibits`, `/exhibits/:id` | Бүгд |
+| Технологийн хувьсал: он бүрийн тоо, хоёр оны харьцуулалт, дарж шүүх | `/evolution` | Бүгд |
+| Багш нар, арга хэмжээ (зургийн цомог), тэнхимийн түүх, бүтээгчид | `/teachers`, `/events`, `/history`, `/creators` | Бүгд |
+| Бүртгүүлэх, нэвтрэх (имэйл баталгаажуулалттай) | `/register`, `/login` | Зочин |
+| Өөрийн бүтээл нэмэх/засах/устгах, зураг байршуулах, хянуулахаар илгээх | `/my-works` | Нэвтэрсэн хэрэглэгч |
+| Бүтээл нийтлэх/буцаах, багш/арга хэмжээ/түүх/ангилал удирдах | `/admin` | Админ |
+
+Бүтээлийн төлөв: `draft → pending → published`. Нийтлэх эрх зөвхөн админд байна, үүнийг өгөгдлийн сангийн trigger болон RLS хамгаална (UI-д найддаггүй).
+
+## Технологи
+
+React 19, Vite, React Router, Supabase (Postgres + Auth + Storage + Row Level Security), CSS, Vitest, oxlint. Hosting: Vercel.
+
+```
+src/pages/        хуудсууд
+src/components/   давтагддаг UI (ExhibitCard, LoadState, RequireAuth…)
+src/features/     цэвэр логик: evolution/aggregate.js, exhibits/validate.js, exhibits/filter.js, auth
+src/services/     Supabase query-нууд (exhibits, content, storage)
+supabase/         migration (schema, RLS, storage policy), config
+scripts/          rls-check.mjs (олон хэрэглэгчийн RLS шалгалт), seed-demo.mjs
+tests/            Vitest
+docs/             төлөвлөгөө, архитектур (ERD), дизайн, тест, deployment, явц
 ```
 
-Нээх: http://127.0.0.1:5173 . Supabase тохируулаагүй үед эх загвар өөрийн төлөвөө тодорхой харуулна.
+Өгөгдлийн бүтэц болон ERD: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md). Байршуулах заавар: [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). Демо скрипт: [`docs/TESTS.md`](docs/TESTS.md).
 
-Supabase холбох үед `.env.example`-ийг `.env.local` болгон хуулж, зөв project-ийн URL болон publishable key-г editor дотор бөглөнө. Secret/service-role түлхүүр бүү ашигла.
+## Local дээр ажиллуулах
 
-## Claude-д өгөх
+Node 24.x, npm.
 
-Эхлээд `CLAUDE.md`, дараа нь `docs/CLAUDE-START.md` доторх prompt. Нарийвчилсан төлөвлөгөө `docs/PLAN.md`; DB/эрх `docs/ARCHITECTURE.md`; загвар `docs/DESIGN.md`; шалгах зүйл `docs/TESTS.md`; deployment `docs/DEPLOYMENT.md`; явц `docs/STATUS.md`.
+```powershell
+npm ci
+copy .env.example .env.local   # дараа нь VITE_SUPABASE_URL, VITE_SUPABASE_PUBLISHABLE_KEY-г бөглөнө
+npm run dev                     # http://127.0.0.1:5173
+```
 
-## Команд
+Зөвхөн **publishable** key ашиглана. Service-role/secret key-г frontend болон Git-д хэзээ ч бүү оруул.
+
+## Командууд
 
 | Команд | Үйлдэл |
 |---|---|
-| npm run dev | Local server, 5173 |
-| npm run check | Lint + unit tests + production build |
-| npm run test | Aggregation tests |
-| npm run build | dist үүсгэх |
-| npm run preview | Production bundle-ийг local харах |
+| `npm run dev` | Local server (5173) |
+| `npm run check` | Lint + unit test + production build |
+| `npm run test` | Vitest (aggregation, filter, validation, upload compensation, auth) |
+| `npm run build` / `npm run preview` | `dist` үүсгэх / local дээр харах |
+| `npm run rls-check` | Бодит Supabase дээр зочин/A/B/админ эрхийг шалгах (`.env.local`-д тест аккаунт хэрэгтэй) |
+| `npm run seed-demo` | **[Demo]** гэж тэмдэглэсэн жишээ өгөгдөл нэмэх |
 
-## Технологи ба бүтэц
+## Агуулгын тухай
 
-React/JavaScript, Vite, React Router, Supabase client, CSS, Vitest. `src/` код; `tests/` тест; `docs/` заавар. SQL migrations-ийг Claude M1 үе шатанд нэмнэ. Vercel тохиргоо бэлэн, cloud deployment хийгдээгүй.
-
-Багшийн 10 профайлын өмнөх судалгаа `docs/reference/teacher-research.md`-д локалаар бий. PDF болон зураг мөн reference хавтаст байна. Эдгээр нь Git-д орохгүй; шинэ checkout-д зөвшөөрөгдсөн reference-ийг тусад нь авах шаардлагатай. Зөвшөөрөлтэй, нягталсан нийтэд харагдах агуулгыг л seed болгоно.
-
-## Одоогийн хязгаар
-
-Нэвтрэлт/өгөгдөл/зураг/RLS/admin/бүтээлч UI хэрэгжээгүй. Supabase project, GitHub remote, Vercel URL байхгүй. UI-ийн placeholder-уудыг бодит ажиллагаатай гэж үзэхгүй. Эцсийн хүлээн авах шалгуурыг PLAN/TESTS-ээс хар.
+**[Demo]** гэж эхэлсэн бүтээл, арга хэмжээ, түүх нь функцийг харуулах жишээ өгөгдөл бөгөөд тэнхимийн бодит түүх биш. Багшийн мэдээллийг зөвшөөрөл баталгаажсаны дараа л нийтэлнэ, дэлгэрэнгүйг [`docs/CONTENT.md`](docs/CONTENT.md)-ээс харна уу. Demo зургууд нь генерацласан градиент тул гуравдагч этгээдийн зураг ашиглаагүй.

@@ -37,8 +37,7 @@ export default function EvolutionPage() {
         <div className="bars" aria-hidden="true">{rows.map((r) => <div key={r.technology} className="bar-row">
           <span className="bar-label">{r.technology}</span>
           <div>
-            <span className="bar a" style={{ width: `${(r.a / max) * 100}%` }}>{r.a}</span>
-            <span className="bar b" style={{ width: `${(r.b / max) * 100}%` }}>{r.b}</span>
+            {[['a', r.a], ['b', r.b]].map(([k, n]) => <span key={k} className={`bar ${n ? k : 'zero'}`} style={{ width: `${(n / max) * 100}%` }}>{n}</span>)}
           </div>
         </div>)}</div>
         <p className="legend" aria-hidden="true"><span className="swatch a" /> {a} &nbsp; <span className="swatch b" /> {b}</p>

@@ -24,13 +24,20 @@ Category deletion should be restricted while referenced. Creator deletion must n
 
 ```mermaid
 erDiagram
-    AUTH_USERS ||--|| PROFILES : identifies
-    PROFILES ||--o{ EXHIBITS : creates
-    EXHIBITION_CATEGORIES ||--o{ EXHIBITS : classifies
-    EVENTS ||--o{ EVENT_PHOTOS : contains
+    AUTH_USERS ||--|| PROFILES : "id (on delete cascade)"
+    PROFILES ||--o{ EXHIBITS : "creator_id (on delete restrict)"
+    EXHIBITION_CATEGORIES |o--o{ EXHIBITS : "category_id (on delete restrict)"
+    EVENTS ||--o{ EVENT_PHOTOS : "event_id (on delete cascade)"
+    PROFILES { uuid id PK "= auth.users.id" text display_name text bio text avatar_path timestamptz created_at }
+    EXHIBITION_CATEGORIES { uuid id PK text name UK text description }
+    EXHIBITS { uuid id PK uuid creator_id FK uuid category_id FK text title text description text image_path int year_created "nullable" text_arr technology_stack text demo_url text github_url text status "draft|pending|published" text moderation_note timestamptz created_at timestamptz updated_at }
+    TEACHERS { uuid id PK text name text position text_arr courses text bio text photo_path text source_url int sort_order bool published }
+    EVENTS { uuid id PK text title date event_date text description text cover_image_path bool published }
+    EVENT_PHOTOS { uuid id PK uuid event_id FK text image_path text caption int sort_order }
+    HISTORY_ENTRIES { uuid id PK int year text title text description text source_url bool published }
 ```
 
-This is the planned ERD; update it to match implemented migrations before handover. TEACHERS and HISTORY_ENTRIES are standalone content tables.
+Matches `supabase/migrations/20261101120000_museum_schema.sql` (checked 2026-11-08). TEACHERS and HISTORY_ENTRIES are standalone content tables.
 
 ## Security design
 
