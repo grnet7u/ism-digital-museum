@@ -50,5 +50,10 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 - Production as admin (already signed in): /admin loads, Teachers tab edit form shows the photo field (JPEG/PNG/WebP). `npm run rls-check` with the new admin account: all checks PASS. Student set Supabase Site URL + /auth/callback redirect to the Vercel domain.
 - Not verified: an actual photo upload on production (avoided putting a test image on a real teacher), signup e-mail flow.
 
+## Teacher profiles in English (2026-11-08)
+- Migration 20261108120000_teacher_english.sql adds name_en, position_en, courses_en, bio_en. `localize(row)` (prefs-context) swaps in non-empty *_en values in EN mode; empty ones fall back to Mongolian. Admin → Teachers form has the four English fields; the form now joins every `lines` field, not only `courses`.
+- English text: supabase/seed/teachers_en.local.sql (git-ignored like the teacher seed). Written without gendered pronouns because the Mongolian source has none.
+- `npm run check`: 21 tests pass (new tests/localize.test.js). Production verification pending until the student runs both SQL files.
+
 ## Next action
 Student uploads real teacher photos (with consent) via Admin → Teachers; then screenshots for docs.

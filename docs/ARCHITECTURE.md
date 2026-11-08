@@ -15,7 +15,7 @@ All IDs UUID primary keys; created_at timestamptz default now where relevant. Fo
 | profiles | id references auth.users; display_name; bio; avatar_path; created_at. Public-safe fields only. No editable role/email column. |
 | exhibition_categories | id; unique name; description |
 | exhibits | id; creator_id → profiles; category_id → categories; title; description; image_path; integer year_created; text[] technology_stack; demo_url; github_url; status enum/check draft,pending,published; moderation_note; created_at; updated_at |
-| teachers | id; name; position; text[] courses; bio; photo_path; source_url; published boolean |
+| teachers | id; name; position; text[] courses; bio; photo_path; source_url; published boolean; English: name_en, position_en, text[] courses_en, bio_en (EN mode shows them, empty falls back to Mongolian) |
 | events | id; title; event_date (date); description; cover_image_path; published boolean |
 | event_photos | id; event_id → events ON DELETE CASCADE; image_path; caption; sort_order |
 | history_entries | id; year; title; description; source_url; published boolean |
@@ -31,7 +31,7 @@ erDiagram
     PROFILES { uuid id PK "= auth.users.id" text display_name text bio text avatar_path timestamptz created_at }
     EXHIBITION_CATEGORIES { uuid id PK text name UK text description }
     EXHIBITS { uuid id PK uuid creator_id FK uuid category_id FK text title text description text image_path int year_created "nullable" text_arr technology_stack text demo_url text github_url text status "draft|pending|published" text moderation_note timestamptz created_at timestamptz updated_at }
-    TEACHERS { uuid id PK text name text position text_arr courses text bio text photo_path text source_url int sort_order bool published }
+    TEACHERS { uuid id PK text name text position text_arr courses text bio text name_en text position_en text_arr courses_en text bio_en text photo_path text source_url int sort_order bool published }
     EVENTS { uuid id PK text title date event_date text description text cover_image_path bool published }
     EVENT_PHOTOS { uuid id PK uuid event_id FK text image_path text caption int sort_order }
     HISTORY_ENTRIES { uuid id PK int year text title text description text source_url bool published }

@@ -3,7 +3,7 @@ import { useLoad } from '../lib/useLoad'
 import { getTeacher, listTeachers } from '../services/content'
 import { signedUrls } from '../services/storage'
 import LoadState from '../components/LoadState'
-import { t } from '../features/prefs/prefs-context'
+import { localize, t } from '../features/prefs/prefs-context'
 
 const Portrait = ({ url, name }) => url
   ? <img className="portrait" src={url} alt={t(`${name} багшийн зураг`, `Photo of ${name}`)} />
@@ -18,7 +18,7 @@ export function TeachersPage() {
   return <section className="section">
     <h1>{t('Багш нар', 'Teachers')}</h1>
     <LoadState loading={loading} error={error} reload={reload} empty={!data?.teachers.length} emptyText={t('Нийтлэгдсэн багшийн мэдээлэл одоогоор алга.', 'No published teacher profiles yet.')}>
-      <div className="grid">{data?.teachers.map((teacher) => <article key={teacher.id} className="card teacher-card">
+      <div className="grid">{data?.teachers.map(localize).map((teacher) => <article key={teacher.id} className="card teacher-card">
         <Portrait url={data.urls[teacher.photo_path]} name={teacher.name} />
         <Draft show={!teacher.published} />
         <h3><Link to={`/teachers/${teacher.id}`}>{teacher.name}</Link></h3>
@@ -34,7 +34,7 @@ export function TeacherDetailPage() {
     const teacher = await getTeacher(id)
     return { teacher, urls: teacher ? await signedUrls([teacher.photo_path]) : {} }
   }, [id])
-  const teacher = data?.teacher
+  const teacher = data?.teacher && localize(data.teacher)
   return <section className="section">
     <LoadState loading={loading} error={error} reload={reload} empty={!teacher} emptyText={t('Багш олдсонгүй.', 'Teacher not found.')}>
       {teacher && <article className="detail teacher-detail">

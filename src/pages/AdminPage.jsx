@@ -16,7 +16,8 @@ const tabs = () => [['moderation', t('Бүтээл хянах', 'Moderation')], 
 const configs = () => ({
   teachers: { table: 'teachers', folder: 'teachers', imageField: 'photo_path', list: listTeachers, label: (teacher) => teacher.name, fields: [
     ['name', t('Нэр *', 'Name *'), 'text', true], ['position', t('Албан тушаал', 'Position'), 'text'], ['courses', t('Хичээлүүд (мөр бүрд нэг)', 'Courses (one per line)'), 'lines'],
-    ['bio', t('Танилцуулга', 'Bio'), 'textarea'], ['source_url', t('Эх сурвалжийн холбоос', 'Source link'), 'text'], ['sort_order', t('Дараалал', 'Order'), 'number'],
+    ['name_en', t('Нэр (англи)', 'Name (English)'), 'text'], ['position_en', t('Албан тушаал (англи)', 'Position (English)'), 'text'], ['courses_en', t('Хичээлүүд (англи, мөр бүрд нэг)', 'Courses (English, one per line)'), 'lines'],
+    ['bio', t('Танилцуулга', 'Bio'), 'textarea'], ['bio_en', t('Танилцуулга (англи)', 'Bio (English)'), 'textarea'], ['source_url', t('Эх сурвалжийн холбоос', 'Source link'), 'text'], ['sort_order', t('Дараалал', 'Order'), 'number'],
     ['photo_path', t('Зураг', 'Photo'), 'image'], ['published', t('Нийтлэх', 'Publish'), 'checkbox']] },
   events: { table: 'events', folder: 'events', imageField: 'cover_image_path', list: listEvents, label: (e) => `${e.title} · ${formatDate(e.event_date)}`, fields: [
     ['title', t('Нэр *', 'Title *'), 'text', true], ['event_date', t('Огноо *', 'Date *'), 'date', true], ['description', t('Тайлбар', 'Description'), 'textarea'],
@@ -106,7 +107,8 @@ function ConfirmActions({ onEdit, onDelete }) {
 }
 
 function ContentForm({ config, row, onSaved, onCancel }) {
-  const [form, setForm] = useState({ ...row, courses: row.courses?.join('\n') })
+  const [form, setForm] = useState(() => ({ ...row, ...Object.fromEntries(config.fields
+    .filter(([, , type]) => type === 'lines').map(([name]) => [name, (row[name] ?? []).join('\n')])) }))
   const [file, setFile] = useState(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
