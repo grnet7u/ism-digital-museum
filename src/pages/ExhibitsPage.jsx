@@ -47,7 +47,7 @@ export default function ExhibitsPage() {
         <label>Технологи<select value={filters.tech} onChange={(e) => setFilter('tech', e.target.value)}>
           <option value="">Бүх технологи</option>{techs.map((t) => <option key={t}>{t}</option>)}
         </select></label>
-        {active && <button type="button" className="button secondary" onClick={reset}>Цэвэрлэх</button>}
+        {active && <button type="button" className="button secondary-light" onClick={reset}>Цэвэрлэх</button>}
       </form>
       <p className="muted" role="status">{shown.length} / {exhibits.length} бүтээл</p>
       {shown.length
