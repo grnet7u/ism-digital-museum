@@ -53,7 +53,7 @@ Owner: Claude Code. Codex owns the separate StudyMate project.
 ## Teacher profiles in English (2026-11-08)
 - Migration 20261108120000_teacher_english.sql adds name_en, position_en, courses_en, bio_en. `localize(row)` (prefs-context) swaps in non-empty *_en values in EN mode; empty ones fall back to Mongolian. Admin → Teachers form has the four English fields; the form now joins every `lines` field, not only `courses`.
 - English text: supabase/seed/teachers_en.local.sql (git-ignored like the teacher seed). Written without gendered pronouns because the Mongolian source has none.
-- `npm run check`: 21 tests pass (new tests/localize.test.js). Production verification pending until the student runs both SQL files.
+- `npm run check`: 21 tests pass (new tests/localize.test.js). Student ran both SQL files; all 10 rows have name_en/position_en and matching courses_en (8 bios; 2 have no Mongolian bio either). Production EN: teachers list + all 10 detail pages contain no Cyrillic; full 68-visit smoke test has no page errors (only the known lazy-image false positive on /exhibits).
 
 ## Next action
 Student uploads real teacher photos (with consent) via Admin → Teachers; then screenshots for docs.
